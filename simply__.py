@@ -1,32 +1,31 @@
 # -*- coding: utf-8 -*-
 
-##  ROAD NETWORK EXTRACTION USING CNN  ##
-##  SERCAN CAKIR MASTER'S THESIS       ##
-##  SUBMISSION DATE: 02.11.2017        ##
+## Map Generalization for Polygons using Autoencode-like strucutures
+## Adatped based on Master Thesis of SERCAN CAKIR "ROAD NETWORK EXTRACTION USING CNN"
+## Author: Yu Feng, yuzz.feng@gmail.com
+## 1. Version Author: SERCAN CAKIR
 
-# Import libraries
 import matplotlib
-matplotlib.use('Agg')
-
+matplotlib.use('Agg') # necessary for linux kernal
 import matplotlib.pyplot as plt
 
 import os
 import numpy as np
 from numpy import random
-
 np.random.seed(7)
 import keras
 from keras.models import Sequential
 from keras.callbacks import History
 from keras.layers.core import Dropout
 from keras.layers.convolutional import UpSampling2D, Conv2D
+from keras.layers import MaxPooling2D, Conv2DTranspose
 from keras import backend as K
 
+from osgeo import gdal
+from sklearn.model_selection import train_test_split
+from skimage.util.shape import view_as_windows
 
 # function to read .tif image files
-from osgeo import gdal
-
-
 def readImg(img):
     # Read heatmap
     image = gdal.Open(img)
@@ -38,23 +37,12 @@ def readImg(img):
     image = (image - image.min()) / (image.max() - image.min())
     return image.astype('float32')
 
-
-# Load Strava heat map and target road for Hannover ####
-
 # function to create image patches
-from skimage.util.shape import view_as_windows
-import numpy as np
-
-
 def imagePatches(img1, p_w, p_h, stride):
     img_1 = view_as_windows(img1, (p_w, p_h), stride)
     a, b, h, w = img_1.shape
     img_1_1 = np.reshape(img_1, (a * b, p_w, p_h))
     return img_1_1
-
-
-
-
 
 # functions to remove fully black images from heatmap and target data, and all the correspondences
 def removeBlackImg(img_patch):
@@ -66,8 +54,8 @@ def removeBlackImg(img_patch):
             patch_list_new.append(img_patch[i])
     return patch_list_new
 
-
-def removeCorrespondence(road, heat):  # remove roads if heats are black
+# remove roads if heats are black
+def removeCorrespondence(road, heat):  
     patch_road_list = []
     patch_heat_list = []
     patch_road_list_new = []
@@ -78,101 +66,183 @@ def removeCorrespondence(road, heat):  # remove roads if heats are black
             patch_road_list_new.append(road[i])
     return patch_road_list_new
 
+# function to load a saved model
+def LoadModel(model_json):
+    from keras.models import model_from_json
+    json_file = open(model_json)
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_model_json)
+    return loaded_model
 
 
-from sklearn.model_selection import train_test_split
+##### function to calculate evaluation parameters (F1-Score, Precision, Recall) ######
+def evaluation(model, x_test, y_test, patch_size):
+    precision = []
+    recall = []
+    f1Score = []
+    import math
+    for k in range(len(x_test_sim)):
+        y_pred = model.predict(x_test_sim[k:k + 1])
+        y_pred = np.reshape(y_pred, (32 * 32))
+
+        y_true = y_test_sim[k:k + 1]
+        y_true = np.reshape(y_true, (32 * 32))
+
+        TP = 0
+        FP = 0
+        FN = 0
+        TN = 0
+
+        y_pred = np.round(y_pred)
+        for i in range(len(y_pred)):
+            if y_true[i] == y_pred[i] == 1:
+                TP += 1
+            elif y_pred[i] == y_true[i] == 0:
+                TN += 1
+            elif y_pred[i] == 1 and y_true[i] != y_pred[i]:
+                FP += 1
+            elif y_pred[i] == 0 and y_true[i] != y_pred[i]:
+                FN += 1
+
+        precision.append(TP / (TP + FP + K.epsilon()))  # completeness
+        recall.append(TP / (TP + FN))  # correctness
+        beta = 1
+        f1Score.append((math.pow(beta, 2) + 1) * TP / ((math.pow(beta, 2) + 1) * TP + math.pow(beta, 2) * FN + FP))
+        # eval_list = [precision,  recall, f1Score]
+
+    avg_precision = sum(precision) / len(precision)
+    avg_recall = sum(recall) / len(precision)
+    avg_f1score = sum(f1Score) / len(precision)
+    avg_eval_param = [avg_precision, avg_recall, avg_f1score]
+    return avg_eval_param
 
 
 
-##### Building the CNN archıtecture with "Sequential Model" (model looks like autoencoder)
+##### Building the CNN archıtecture with "Sequential Model" 
+##### (model looks like autoencoder)
 def create_model(optimizer, input_shape):
     model = Sequential()
-    ### Encoding (down-sampling) ###
+    
+    droprate = 0.2
+
+    model.add(Conv2D(filters=24, kernel_size=(5, 5),
+              strides=(1, 1), padding='same',
+              activation='relu', input_shape=input_shape, kernel_initializer='random_uniform',
+              name="flat_conv_a"))
+    model.add(Dropout(droprate))
+    
+    model.add(Conv2D(filters=24, kernel_size=(5, 5),
+              strides=(1, 1), padding='same',
+              activation='relu',name="flat_conv_b"))
+    model.add(Dropout(droprate))
+    
+#    model.add(Conv2D(filters=24, kernel_size=(3, 3),
+#              strides=(1, 1), padding='same',
+#              activation='relu',name="flat_conv_c"))
+#    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='same'))
+#    model.add(Dropout(droprate))
+    
+    ## Encoding (down-sampling) ###   
     model.add(Conv2D(filters=24, kernel_size=(5, 5),
                      strides=(2, 2), padding='same',
-                     activation='relu', input_shape=input_shape, kernel_initializer='random_uniform',
+                     activation='relu', #input_shape=input_shape, kernel_initializer='random_uniform',
                      name="down_conv_1"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     model.add(Conv2D(filters=64, kernel_size=(3, 3),
                      strides=(1, 1), padding='same',
                      activation='relu', name="flat_conv_1"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     model.add(Conv2D(filters=64, kernel_size=(3, 3),
                      strides=(1, 1), padding='same',
                      activation='relu', name="flat_conv_2"))
-    model.add(Dropout(0.1))
-    ###############################################################################
+    model.add(Dropout(droprate))
+    ##############################################################################
+    
+#    model.add(Conv2D(filters=24, kernel_size=(3, 3),
+#              strides=(1, 1), padding='same',
+#              activation='relu',name="down_conv_2"))
+#    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='same'))
+#    model.add(Dropout(droprate))
+    
     model.add(Conv2D(filters=64, kernel_size=(3, 3),
                      strides=(2, 2), padding='same',
                      activation='relu', name="down_conv_2"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     model.add(Conv2D(filters=128, kernel_size=(3, 3),
                      strides=(1, 1), padding='same',
                      activation='relu', name="flat_conv_3"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     model.add(Conv2D(filters=256, kernel_size=(3, 3),
                      strides=(1, 1), padding='same',
                      activation='relu', name="flat_conv_4"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     model.add(Conv2D(filters=256, kernel_size=(3, 3),
                      strides=(1, 1), padding='same',
                      activation='relu', name="flat_conv_5"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     model.add(Conv2D(filters=256, kernel_size=(3, 3),
                      strides=(1, 1), padding='same',
                      activation='relu', name="flat_conv_6"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     model.add(Conv2D(filters=256, kernel_size=(3, 3),
                      strides=(1, 1), padding='same',
                      activation='relu', name="flat_conv_7"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     model.add(Conv2D(filters=128, kernel_size=(3, 3),
                      strides=(1, 1), padding='same',
                      activation='relu', name="flat_conv_8"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
     ###############################################################################
     model.add(UpSampling2D(size=(2, 2), name='up_samp_1'))
+    
+#    model.add(Conv2DTranspose(filters=64, kernel_size=(3, 3), strides=(2, 2), 
+#                              padding='same', activation='softmax'))
+    
 
     model.add(Conv2D(filters=64, kernel_size=(4, 4),
                      strides=(1, 1), padding='same',
                      activation='relu', name="up_conv_1"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     model.add(Conv2D(filters=64, kernel_size=(3, 3),
                      strides=(1, 1), padding='same',
                      activation='relu', name="flat_conv_9"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     model.add(Conv2D(filters=64, kernel_size=(3, 3),
                      strides=(1, 1), padding='same',
                      activation='relu', name="flat_conv_10"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
     ###############################################################################
     model.add(UpSampling2D(size=(2, 2), name='up_samp_2'))
+    
+#    model.add(Conv2DTranspose(filters=64, kernel_size=(3, 3), strides=(2, 2), # Lead the accuracy to 0.78
+#                              padding='same', activation='softmax'))
 
     model.add(Conv2D(filters=24, kernel_size=(4, 4),
                      strides=(1, 1), padding='same',
                      activation='relu', name="up_conv_2"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     model.add(Conv2D(filters=12, kernel_size=(3, 3),
                      strides=(1, 1), padding='same',
                      activation='relu', name="flat_conv_11"))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     model.add(Conv2D(filters=1, kernel_size=(3, 3),
                      strides=(1, 1), padding='same',
                      activation='sigmoid', name="flat_conv_12"))
     # model.add(Activation(our_activation))
-    model.add(Dropout(0.1))
+    model.add(Dropout(droprate))
 
     # Compile model with Adam optimizer and binary cross entropy loss function
     model.compile(optimizer=optimizer,
@@ -245,7 +315,6 @@ class LearningRateTracker(keras.callbacks.Callback):
         print('\n LR: {}\n'.format(lr))
         self.lr_list.append(lr)
 
-
 ##################################################################################################################################
 class SaveWeights(keras.callbacks.Callback):  # Saves weights after each 25 epochs
     def on_epoch_end(self, epoch, logs={}):
@@ -255,7 +324,6 @@ class SaveWeights(keras.callbacks.Callback):  # Saves weights after each 25 epoc
                 json_file.write(model_json)
             self.model.save_weights("weights_model_" + str(epoch) + ".h5")
             print("Saved model-weights to disk")
-
 
 ##################################################################################################################################
 
@@ -279,30 +347,15 @@ p_size_1 = 128
 sim_hm_patches_32 = imagePatches(sim_heatmap_hannover, p_size_1, p_size_1, p_size_1)
 sim_road_patches_32 = imagePatches(sim_road_hannover, p_size_1, p_size_1, p_size_1)
 
-
-#p_size_2 = 200
-## hm: heatmap
-#sim_hm_patches_200 = imagePatches(sim_heatmap_hannover, p_size_2, p_size_2, p_size_2)
-#sim_road_patches_200 = imagePatches(sim_road_hannover, p_size_2, p_size_2, p_size_2)
-#plt.imshow(np.reshape(sim_hm_patches_200[41], (200,200)))
-#plt.show()
-
 sim_road_patches_32_new = removeCorrespondence(sim_road_patches_32, sim_hm_patches_32)
 sim_hm_patches_32_new = removeCorrespondence(sim_hm_patches_32, sim_road_patches_32)
 sim_road_patches_32_new_new = removeBlackImg(sim_road_patches_32)
-
-
-####
-#sim_road_patches_200_new = removeCorrespondence(sim_road_patches_200, sim_hm_patches_200)
-#sim_hm_patches_200_new = removeCorrespondence(sim_hm_patches_200, sim_road_patches_200)
-#sim_road_patches_200_new_new = removeBlackImg(sim_road_patches_200)
-
 
 ### experience 1 - simulated hm
 index_list_sim = list(range(len(sim_hm_patches_32_new)))
 random.shuffle(index_list_sim)
 
-idx_sim = 100
+idx_sim = 50
 index_list_test_sim = index_list_sim[-idx_sim:]
 index_list_test_sim.sort()
 sim_hm_test = [sim_hm_patches_32_new[i] for i in index_list_test_sim]
@@ -327,12 +380,10 @@ np.save("y_test_sim.npy", y_test_sim)
 # plt.imshow(np.reshape(x_test_sim[2], (p_size_1,p_size_1)))
 # plt.imshow(np.reshape(y_test_sim[2], (p_size_1,p_size_1)))
 
-
-
 input_shape1 = x_train_sim[0].shape
+print('Input Shape of the models', x_train_sim.shape)
 
 opt1 = keras.optimizers.Adadelta(lr=1.0, rho=0.95, epsilon=1e-08, decay=0.0)
-
 model_ex1 = create_model(opt1, input_shape1)
 
 
@@ -398,7 +449,6 @@ print("Saved model to disk")
 
 ## Test trained models on test images
 
-
 image_arr = readImg(r"testexampleinput2.tif")
 
 b = 128 #32  # patch size
@@ -436,56 +486,4 @@ plt.imshow(conc2)
 fig.savefig("strava_pred", dpi=1000)
 
 
-##### function to calculate evaluation parameters (F1-Score, Precision, Recall) ######
-def evaluation(model, x_test, y_test, patch_size):
-    precision = []
-    recall = []
-    f1Score = []
-    import math
-    for k in range(len(x_test_sim)):
-        y_pred = model.predict(x_test_sim[k:k + 1])
-        y_pred = np.reshape(y_pred, (32 * 32))
-
-        y_true = y_test_sim[k:k + 1]
-        y_true = np.reshape(y_true, (32 * 32))
-
-        TP = 0
-        FP = 0
-        FN = 0
-        TN = 0
-
-        y_pred = np.round(y_pred)
-        for i in range(len(y_pred)):
-            if y_true[i] == y_pred[i] == 1:
-                TP += 1
-            elif y_pred[i] == y_true[i] == 0:
-                TN += 1
-            elif y_pred[i] == 1 and y_true[i] != y_pred[i]:
-                FP += 1
-            elif y_pred[i] == 0 and y_true[i] != y_pred[i]:
-                FN += 1
-
-        precision.append(TP / (TP + FP + K.epsilon()))  # completeness
-        recall.append(TP / (TP + FN))  # correctness
-        beta = 1
-        f1Score.append((math.pow(beta, 2) + 1) * TP / ((math.pow(beta, 2) + 1) * TP + math.pow(beta, 2) * FN + FP))
-        # eval_list = [precision,  recall, f1Score]
-
-    avg_precision = sum(precision) / len(precision)
-    avg_recall = sum(recall) / len(precision)
-    avg_f1score = sum(f1Score) / len(precision)
-    avg_eval_param = [avg_precision, avg_recall, avg_f1score]
-    return avg_eval_param
-
-
 #  evaluation(model_ex1, x_test_sim, y_test_sim, 32)
-
-
-# function to load a saved model
-def LoadModel(model_json):
-    from keras.models import model_from_json
-    json_file = open(model_json)
-    loaded_model_json = json_file.read()
-    json_file.close()
-    loaded_model = model_from_json(loaded_model_json)
-    return loaded_model
