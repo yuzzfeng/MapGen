@@ -1,5 +1,8 @@
 # MapGen
 
+
+### Dependencies and Settings
+
 ```
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/nvidia/lib64 &&
 export PATH=$PATH:/usr/local/nvidia/bin:/usr/local/sbin:/usr/sbin:/sbin &&
