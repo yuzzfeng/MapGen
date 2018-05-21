@@ -1,5 +1,8 @@
 # MapGen
 
+### Introduction
+
+Building simplification is conducted in this work using a fully conv layers with down-conv and up-conv. The original work was provided by a master thesis, which use the car trajectories to reconstruct the road networks.
 
 ### Dependencies and Settings
 
