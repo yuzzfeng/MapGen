@@ -23,3 +23,10 @@ cd tmp
 python3 simply.py
 curl -X DELETE http://130.75.51.24/marathon/v2/apps/feng-1gpu
 ```
+
+
+### Git Commands
+
+```
+git add -A && git commit -m "Your Message"
+```
