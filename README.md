@@ -19,11 +19,11 @@ apt-get install python3-tk -y &&
 apt-get install python3-skimage -y &&
 apt install gdal-bin python-gdal python3-gdal -y &&
 mkdir tmp &&
-mount -t cifs -o user=,password= //130.75.51.38/tmp/yu tmp &&
+mount -t cifs -o user=,password= //130.75.51.38/tmp/yourname tmp &&
 cd tmp 
 
 python3 simply.py
-curl -X DELETE http://130.75.51.24/marathon/v2/apps/feng-1gpu
+curl -X DELETE http://130.75.51.24/marathon/v2/apps/yourinstancename
 ```
 
 ## Setting for DCOS
