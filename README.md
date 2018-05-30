@@ -26,7 +26,7 @@ python3 simply.py
 curl -X DELETE http://130.75.51.24/marathon/v2/apps/yourinstancename
 ```
 
-## Setting for DCOS
+### Setting for DCOS
 ```
 {
   "id": "/yourname-1gpu",
