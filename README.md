@@ -66,7 +66,7 @@ winpty docker exec -it yourDockerInstanceName bash            // Run bash on thi
 - Latter run it (After you restart your PC)
 ```
 docker ps  -a                                                 // See your already shut down working instance name
-docker start yourDockerInstanceName	                          // Start your instance of the downloaded image
+docker start yourDockerInstanceName                           // Start your instance of the downloaded image
 winpty docker exec -it yourDockerInstanceName bash            // Run  bash on this instance
 ```
 
