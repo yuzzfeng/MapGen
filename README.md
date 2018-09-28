@@ -1,4 +1,4 @@
-# MapGen
+# Building Generalization with GAN
 
 ### Introduction
 
