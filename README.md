@@ -103,6 +103,11 @@ apt install gdal-bin python-gdal python3-gdal -y &&
 mkdir tmp &&
 mount -t cifs -o user=,password= //130.75.51.38/tmp/yourname tmp &&
 cd tmp 
+
+git clone https://www.github.com/keras-team/keras-contrib.git
+cd keras-contrib
+python setup.py install
+
 ```
 Run a python script and delete the DCOS instance after it finished (Optional)
 ```
