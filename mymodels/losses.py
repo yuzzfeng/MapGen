@@ -1,4 +1,23 @@
+import tensorflow as tf
 from keras import backend as K
+from keras.losses import binary_crossentropy
+
+_EPSILON = 10e-8
+
+def IoU(yTrue,yPred):  
+    
+    I = tf.multiply(yTrue, yPred, name="intersection")
+    U = yTrue + yPred - I + _EPSILON
+    
+    IoU = tf.reduce_sum(I) / tf.reduce_sum(U)
+    return -tf.log(IoU + _EPSILON) + binary_crossentropy(yTrue,yPred)
+    
+    #IoU = tf.divide(I, U, name='IoU')
+    #L = -tf.log(IoU + _EPSILON)
+    #return tf.reduce_mean(L)
+    
+def MSE_CROSS(yTrue,yPred):
+    return binary_crossentropy(yTrue,yPred) + K.abs(K.sum(yTrue) - K.sum(yPred))
 
 def linf_loss(yTrue,yPred):
     return K.max(K.abs(yTrue - yPred))
