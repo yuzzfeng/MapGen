@@ -28,37 +28,37 @@ def res_block(x, nb_filters, strides):
 def decoder(x, from_encoder):
     main_path = UpSampling2D(size=(2, 2))(x)
     main_path = Concatenate(axis=3)([main_path, from_encoder[2]])
-    main_path = res_block(main_path, [256, 256], [(1, 1), (1, 1)])
+    main_path = res_block(main_path, [64, 64], [(1, 1), (1, 1)])
 
     main_path = UpSampling2D(size=(2, 2))(main_path) 
     main_path = Concatenate(axis=3)([main_path, from_encoder[1]])
-    main_path = res_block(main_path, [128, 128], [(1, 1), (1, 1)])
+    main_path = res_block(main_path, [32, 32], [(1, 1), (1, 1)])
 
     main_path = UpSampling2D(size=(2, 2))(main_path)
     main_path = Concatenate(axis=3)([main_path, from_encoder[0]])
-    main_path = res_block(main_path, [64, 64], [(1, 1), (1, 1)])
+    main_path = res_block(main_path, [16, 16], [(1, 1), (1, 1)])
 
     return main_path
 
 def encoder(x):
     to_decoder = []
 
-    main_path = Conv2D(filters=64, kernel_size=(3, 3), padding='same', strides=(1, 1))(x)
+    main_path = Conv2D(filters=16, kernel_size=(3, 3), padding='same', strides=(1, 1))(x)
     main_path = BatchNormalization()(main_path)
     main_path = Activation(activation='relu')(main_path)
-    main_path = Conv2D(filters=64, kernel_size=(3, 3), padding='same', strides=(1, 1))(main_path)
+    main_path = Conv2D(filters=16, kernel_size=(3, 3), padding='same', strides=(1, 1))(main_path)
 
-    shortcut = Conv2D(filters=64, kernel_size=(1, 1), strides=(1, 1))(x)
+    shortcut = Conv2D(filters=16, kernel_size=(1, 1), strides=(1, 1))(x)
     shortcut = BatchNormalization()(shortcut)
 
     main_path = Add()([shortcut, main_path])
     # first branching to decoder
     to_decoder.append(main_path)
 
-    main_path = res_block(main_path, [128, 128], [(2, 2), (1, 1)])
+    main_path = res_block(main_path, [32, 32], [(2, 2), (1, 1)])
     to_decoder.append(main_path)
 
-    main_path = res_block(main_path, [256, 256], [(2, 2), (1, 1)])
+    main_path = res_block(main_path, [64, 64], [(2, 2), (1, 1)])
     to_decoder.append(main_path)
 
     return to_decoder
@@ -69,11 +69,9 @@ def build_res_unet(input_shape):
 
     to_decoder = encoder(inputs)
 
-    path = res_block(to_decoder[2], [512, 512], [(2, 2), (1, 1)]) # 3x
+    path = res_block(to_decoder[2], [128, 128], [(2, 2), (1, 1)]) # 3x
     
-    path = res_block(path, [512, 512], [(1, 1), (1, 1)]) # Yu.add
-    
-    path = res_block(path, [512, 512], [(1, 1), (1, 1)]) # Yu.add
+    path = res_block(path, [128, 128], [(1, 1), (1, 1)]) # Yu.add
 
     path = decoder(path, from_encoder=to_decoder)
 
