@@ -75,8 +75,7 @@ def build_res_unet(input_shape):
 
     path = decoder(path, from_encoder=to_decoder)
     
-    #path = Conv2D(filters=1, kernel_size=(1, 1), activation='sigmoid')(path) 
-    path = Conv2D(filters=1, kernel_size=(1, 1), activation='hard_sigmoid')(path) # hard_sigmoid
+    path = Conv2D(filters=1, kernel_size=(1, 1), activation='sigmoid')(path) 
 
     return Model(input=inputs, output=path)
 
