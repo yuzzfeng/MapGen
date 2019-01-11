@@ -100,8 +100,12 @@ pip3 install keras &&
 apt-get install python3-tk -y &&
 apt-get install python3-skimage -y &&
 apt install gdal-bin python-gdal python3-gdal -y &&
+git clone https://www.github.com/keras-team/keras-contrib.git &&
+cd keras-contrib &&
+python3 setup.py install &&
+cd ../ &&
 mkdir tmp &&
-mount -t cifs -o user=,password= //130.75.51.38/tmp/yourname tmp &&
+mount -t cifs -o user=,password= //130.75.51.38/tmp/yu tmp &&
 cd tmp 
 
 git clone https://www.github.com/keras-team/keras-contrib.git
