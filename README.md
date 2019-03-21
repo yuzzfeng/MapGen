@@ -15,11 +15,11 @@ Buildings shown at original scale 1:15,000, from top to bottom: Test 1 and Test 
 <img src = 'img/FTest1_input_inv_15_runet.png' height = '145px'>
 <img src = 'img/FTest1_input_inv_15_2_gan.png' height = '145px'>
 <br>
-<img src = 'img/FTest3_input_500.png' height = '145px'>
-<img src = 'img/FTest3_output_15_500.png' height = '145px'>
-<img src = 'img/FTest3_input_inv_15_unet.png' height = '145px'>
-<img src = 'img/FTest3_input_inv_15_runet.png' height = '145px'>
-<img src = 'img/FTest3_input_inv_15_2_gan.png' height = '145px'>
+<img src = 'img/FTest3_input_500.png' height = '148px'>
+<img src = 'img/FTest3_output_15_500.png' height = '148px'>
+<img src = 'img/FTest3_input_inv_15_unet.png' height = '148px'>
+<img src = 'img/FTest3_input_inv_15_runet.png' height = '148px'>
+<img src = 'img/FTest3_input_inv_15_2_gan.png' height = '148px'>
 </div>
 
 ### Setting for DCOS
