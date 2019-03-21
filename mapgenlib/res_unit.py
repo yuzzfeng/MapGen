@@ -3,6 +3,7 @@ Residual u-net for mapgen in keras
 
 Reference: https://github.com/DuFanXin/deep_residual_unet/blob/master/res_unet.py
 """
+
 from keras.models import Sequential, Model
 from keras.layers import Input, Dense, Reshape, Flatten, Dropout, Concatenate, Add, Lambda
 from keras.layers import BatchNormalization, Activation, ZeroPadding2D
