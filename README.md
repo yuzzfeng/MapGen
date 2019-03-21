@@ -1,9 +1,23 @@
-# Building Generalization with GAN
+# Learn Cartographic Building Generalization with Deep Convolutional Neural Networks
 
 ### Introduction
 
 Building simplification is conducted in this work using a fully conv layers with down-conv and up-conv. The original work was provided by a master thesis, which use the car trajectories to reconstruct the road networks.
 
+
+<div align = 'center'>
+<img src = 'img/FTest1_input.png' height = '160px'>
+<img src = 'img/FTest1_output.png' height = '160px'>
+<img src = 'img/FTest1_input_inv_out_bw.png' height = '160px'>
+<img src = 'img/FTest1_input_inv_15_runet.png' height = '160px'>
+<img src = 'img/FTest1_input_inv_15_2_gan.png' height = '160px'>
+<br>
+<img src = 'img/FTest3_input_500.png' height = '160px'>
+<img src = 'img/FTest3_output_15_500.png' height = '160px'>
+<img src = 'img/FTest3_input_inv_15_unet.png' height = '160px'>
+<img src = 'img/FTest3_input_inv_15_runet.png' height = '160px'>
+<img src = 'img/FTest3_input_inv_15_2_gan.png' height = '160px'>
+</div>
 
 ### Setting for DCOS
 ```
