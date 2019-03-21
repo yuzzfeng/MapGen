@@ -6,17 +6,17 @@ Building simplification is conducted in this work using a fully conv layers with
 
 
 <div align = 'center'>
-<img src = 'img/FTest1_input.png' height = '160px'>
-<img src = 'img/FTest1_output.png' height = '160px'>
-<img src = 'img/FTest1_input_inv_out_bw.png' height = '160px'>
-<img src = 'img/FTest1_input_inv_15_runet.png' height = '160px'>
-<img src = 'img/FTest1_input_inv_15_2_gan.png' height = '160px'>
+<img src = 'img/FTest1_input.png' height = '150px'>
+<img src = 'img/FTest1_output.png' height = '150px'>
+<img src = 'img/FTest1_input_inv_out_bw.png' height = '150px'>
+<img src = 'img/FTest1_input_inv_15_runet.png' height = '150px'>
+<img src = 'img/FTest1_input_inv_15_2_gan.png' height = '150px'>
 <br>
-<img src = 'img/FTest3_input_500.png' height = '160px'>
-<img src = 'img/FTest3_output_15_500.png' height = '160px'>
-<img src = 'img/FTest3_input_inv_15_unet.png' height = '160px'>
-<img src = 'img/FTest3_input_inv_15_runet.png' height = '160px'>
-<img src = 'img/FTest3_input_inv_15_2_gan.png' height = '160px'>
+<img src = 'img/FTest3_input_500.png' height = '150px'>
+<img src = 'img/FTest3_output_15_500.png' height = '150px'>
+<img src = 'img/FTest3_input_inv_15_unet.png' height = '150px'>
+<img src = 'img/FTest3_input_inv_15_runet.png' height = '150px'>
+<img src = 'img/FTest3_input_inv_15_2_gan.png' height = '150px'>
 </div>
 
 ### Setting for DCOS
