@@ -6,11 +6,11 @@ Building simplification is conducted in this work using a fully conv layers with
 
 
 <div align = 'center'>
-<img src = 'img/FTest1_input.png' height = '150px'>
-<img src = 'img/FTest1_output.png' height = '150px'>
-<img src = 'img/FTest1_input_inv_out_bw.png' height = '150px'>
-<img src = 'img/FTest1_input_inv_15_runet.png' height = '150px'>
-<img src = 'img/FTest1_input_inv_15_2_gan.png' height = '150px'>
+<img src = 'img/FTest1_input.png' height = '145px'>
+<img src = 'img/FTest1_output.png' height = '145px'>
+<img src = 'img/FTest1_input_inv_out_bw.png' height = '145px'>
+<img src = 'img/FTest1_input_inv_15_runet.png' height = '145px'>
+<img src = 'img/FTest1_input_inv_15_2_gan.png' height = '145px'>
 <br>
 <img src = 'img/FTest3_input_500.png' height = '150px'>
 <img src = 'img/FTest3_output_15_500.png' height = '150px'>
