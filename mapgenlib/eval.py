@@ -103,11 +103,12 @@ def evaluate(image_arrA, image_arrB):
     Accuracy = accuracy_score(y_true, y_pred)
     IoU = IoUcheck(y_true, y_pred)
     conf = confusion_matrix(y_true, y_pred)
-    report = classification_report(y_true, y_pred, target_names=target_names)
+    report = classification_report(y_true, y_pred, target_names=target_names, digits=8)
         
     print('Acc & IoU:', Accuracy, IoU)
     print('Error:', 1 - Accuracy)
     print(conf)
+    print(report)
 
     return Accuracy, IoU, conf, report
 
