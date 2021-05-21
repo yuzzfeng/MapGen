@@ -9,17 +9,17 @@ Building simplification is conducted in this work using a fully conv layers with
 Buildings shown at original scale 1:15,000, from top to bottom: Test 1 and Test 2; from left to right: input image, target image, U-net prediction, Residual U-net prediction and GAN prediction.
 
 <div align = 'center'>
-<img src = 'img/FTest1_input.png' height = '145px'>
-<img src = 'img/FTest1_output.png' height = '145px'>
-<img src = 'img/FTest1_input_inv_out_bw.png' height = '145px'>
-<img src = 'img/FTest1_input_inv_15_runet.png' height = '145px'>
-<img src = 'img/FTest1_input_inv_15_2_gan.png' height = '145px'>
+<img src = 'img/FTest1_input.png' height = '140px'>
+<img src = 'img/FTest1_output.png' height = '140px'>
+<img src = 'img/FTest1_input_inv_out_bw.png' height = '140px'>
+<img src = 'img/FTest1_input_inv_15_runet.png' height = '140px'>
+<img src = 'img/FTest1_input_inv_15_2_gan.png' height = '140px'>
 <br>
-<img src = 'img/FTest3_input_500.png' height = '148px'>
-<img src = 'img/FTest3_output_15_500.png' height = '148px'>
-<img src = 'img/FTest3_input_inv_15_unet.png' height = '148px'>
-<img src = 'img/FTest3_input_inv_15_runet.png' height = '148px'>
-<img src = 'img/FTest3_input_inv_15_2_gan.png' height = '148px'>
+<img src = 'img/FTest3_input_500.png' height = '143px'>
+<img src = 'img/FTest3_output_15_500.png' height = '143px'>
+<img src = 'img/FTest3_input_inv_15_unet.png' height = '143px'>
+<img src = 'img/FTest3_input_inv_15_runet.png' height = '143px'>
+<img src = 'img/FTest3_input_inv_15_2_gan.png' height = '143px'>
 </div>
 
 ## Citation:
