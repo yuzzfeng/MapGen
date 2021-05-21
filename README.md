@@ -22,6 +22,21 @@ Buildings shown at original scale 1:15,000, from top to bottom: Test 1 and Test 
 <img src = 'img/FTest3_input_inv_15_2_gan.png' height = '148px'>
 </div>
 
+## Citation:
+
+Please cite this paper in your publications if it helps your research:
+
+    @article{feng2019learning,
+      title={Learning cartographic building generalization with deep convolutional neural networks},
+      author={Feng, Yu and Thiemann, Frank and Sester, Monika},
+      journal={ISPRS International Journal of Geo-Information},
+      volume={8},
+      number={6},
+      pages={258},
+      year={2019},
+      publisher={Multidisciplinary Digital Publishing Institute}
+    }
+
 ### Setting for DCOS
 ```
 {
