@@ -1,4 +1,4 @@
-# Learn Cartographic Building Generalization with Deep Convolutional Neural Networks
+# Learning Cartographic Building Generalization with Deep Convolutional Neural Networks
 
 ### Introduction
 
