@@ -27,7 +27,11 @@ Buildings shown at original scale 1:15,000, from top to bottom: Test 1 and Test 
 - Raster: https://drive.google.com/file/d/1iqZINAnZqX6gICGxhukjqY5ZihvbM1UQ/view?usp=sharing
 - Vector: https://drive.google.com/file/d/1ixfjlNEXxmkipwzqm9cf6eZed1oQevNZ/view?usp=sharing
 
-Please send a short text describing what you would like to work on via google drive, requesting for viewing.
+Please send a short text in the input box within Google Drive Page including:
+- your name and affiliation
+- 2-3 sentences about what you would like to do with the data
+and click requesting for viewing.
+
 The access will be granted within 3 working days (Contact: yu.feng@hs-mainz.de)
 
 ## Citation:
