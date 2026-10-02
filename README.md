@@ -22,6 +22,14 @@ Buildings shown at original scale 1:15,000, from top to bottom: Test 1 and Test 
 <img src = 'img/FTest3_input_inv_15_2_gan.png' height = '143px'>
 </div>
 
+## Data:
+
+- https://drive.google.com/file/d/1iqZINAnZqX6gICGxhukjqY5ZihvbM1UQ/view?usp=sharing
+- https://drive.google.com/file/d/1ixfjlNEXxmkipwzqm9cf6eZed1oQevNZ/view?usp=sharing
+
+Please send a short text describing what you would like to work on via google drive, requesting for viewing.
+The access will be granted within 3 working days (Contact: yu.feng@hs-mainz.de)
+
 ## Citation:
 
 Please cite this paper in your publications if it helps your research:
